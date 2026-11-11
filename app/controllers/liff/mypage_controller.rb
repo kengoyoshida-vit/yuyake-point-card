@@ -10,6 +10,7 @@ module Liff
       @rank = current_visitor.rank
       @next_rank = Rank.ordered.where("min_stamps > ?", @stamps.size).first
       @sunset_info = fetch_sunset_info
+      @show_profile_dialog = current_visitor.needs_profile_prompt?
     end
 
     private

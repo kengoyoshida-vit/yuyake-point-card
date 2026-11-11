@@ -1,0 +1,8 @@
+<h1 class="text-lg font-semibold text-slate-900">プロフィール編集</h1>
+<p class="mt-1 text-sm text-slate-500">イベント運営の参考にさせていただきます。回答は任意です。</p>
+
+<div class="mt-4 rounded-lg bg-white p-4 shadow">
+  <%= render "form", visitor: @visitor %>
+</div>
+
+<%= link_to "キャンセル", liff_profile_path, class: "mt-4 block text-center text-sm text-slate-500 underline" %>

@@ -1,4 +1,12 @@
-<h1 class="text-lg font-semibold text-slate-900">マイページ</h1>
+<% if @show_profile_dialog %>
+  <%= render "liff/profiles/dialog", visitor: current_visitor %>
+<% end %>
+
+<div class="flex items-center justify-between">
+  <h1 class="text-lg font-semibold text-slate-900">マイページ</h1>
+  <%= link_to "プロフィール設定", liff_profile_path,
+        class: "text-sm underline #{current_visitor.category.nil? ? 'font-semibold text-amber-700' : 'text-slate-500'}" %>
+</div>
 
 <div
   class="sunset-panel mt-4 overflow-hidden rounded-lg p-4 shadow"

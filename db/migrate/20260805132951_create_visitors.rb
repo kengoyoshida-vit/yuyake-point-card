@@ -5,6 +5,12 @@ class CreateVisitors < ActiveRecord::Migration[8.1]
       t.string :card_number
       t.string :display_name
       t.string :avatar_url
+      t.integer :category
+      t.string :company_name
+      t.integer :gender
+      t.integer :age_band
+      t.integer :resident
+      t.datetime :profile_prompted_at
 
       t.timestamps
     end

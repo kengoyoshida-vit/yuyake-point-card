@@ -78,4 +78,30 @@ RSpec.describe Visitor, type: :model do
       expect(visitor.rank).not_to eq(bronze)
     end
   end
+
+  describe "profile" do
+    it "needs a profile prompt only for unprompted LINE visitors" do
+      expect(build(:visitor)).to be_needs_profile_prompt
+      expect(build(:visitor, profile_prompted_at: Time.current)).not_to be_needs_profile_prompt
+      expect(build(:visitor, :paper_card)).not_to be_needs_profile_prompt
+    end
+
+    it "keeps company_name for sponsors and government" do
+      visitor = create(:visitor, category: :zero_yen_sponsor, company_name: " 株式会社テスト ")
+
+      expect(visitor.company_name).to eq("株式会社テスト")
+    end
+
+    it "clears company_name for general visitors" do
+      visitor = create(:visitor, category: :general, company_name: "株式会社テスト")
+
+      expect(visitor.company_name).to be_nil
+    end
+
+    it "rejects invalid enum values via validation instead of raising" do
+      visitor = build(:visitor, age_band: "bogus")
+
+      expect(visitor).not_to be_valid
+    end
+  end
 end

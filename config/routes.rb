@@ -16,6 +16,9 @@ Rails.application.routes.draw do
     get "checkin", to: "checkin#show"
     resource :session, only: [ :create ]
     resource :mypage, only: [ :show ], controller: "mypage"
+    resource :profile, only: [ :show, :edit, :update ] do
+      post :skip
+    end
     resources :events, only: [] do
       resource :checkin, only: [ :new, :create ]
     end
