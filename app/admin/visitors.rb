@@ -4,15 +4,19 @@ ActiveAdmin.register Visitor do
   # blank until the visitor links a LINE account themselves.
   permit_params do
     if params[:action] == "create"
-      [ :display_name, :avatar_url ]
+      [ :display_name, :avatar_url, :category, :company_name, :gender, :age_band, :resident ]
     else
-      [ :display_name, :avatar_url, :line_user_id, :card_number ]
+      [ :display_name, :avatar_url, :line_user_id, :card_number, :category, :company_name, :gender, :age_band, :resident ]
     end
   end
 
   filter :display_name_cont, label: "表示名"
   filter :card_number_cont, label: "カード番号"
   filter :line_user_id_cont, label: "LINE ID"
+  filter :category, as: :select, label: "区分", collection: -> { Visitor::CATEGORY_LABELS.invert }
+  filter :gender, as: :select, label: "性別", collection: -> { Visitor::GENDER_LABELS.invert }
+  filter :age_band, as: :select, label: "年齢", collection: -> { Visitor::AGE_BAND_LABELS.invert }
+  filter :resident, as: :select, label: "居住", collection: -> { Visitor::RESIDENT_LABELS.invert }
   filter :created_at
 
   index do
@@ -21,6 +25,7 @@ ActiveAdmin.register Visitor do
     column :display_name
     column :card_number
     column :line_user_id
+    column("区分") { |visitor| Visitor::CATEGORY_LABELS[visitor.category] }
     column("スタンプ数") { |visitor| visitor.stamps.size }
     column("ランク") { |visitor| visitor.rank&.name }
     column :created_at
@@ -43,6 +48,11 @@ ActiveAdmin.register Visitor do
       row :card_number
       row :line_user_id
       row :avatar_url
+      row("区分") { Visitor::CATEGORY_LABELS[resource.category] || "-" }
+      row("社名・団体名") { resource.company_name || "-" }
+      row("性別") { Visitor::GENDER_LABELS[resource.gender] || "-" }
+      row("年齢") { Visitor::AGE_BAND_LABELS[resource.age_band] || "-" }
+      row("居住") { Visitor::RESIDENT_LABELS[resource.resident] || "-" }
       row("ランク") { resource.rank&.name || "-" }
       row("スタンプ数") { resource.stamps.size }
       row :created_at
@@ -68,6 +78,11 @@ ActiveAdmin.register Visitor do
   form do |f|
     f.inputs do
       f.input :display_name, label: "表示名"
+      f.input :category, as: :select, label: "区分", collection: Visitor::CATEGORY_LABELS.invert
+      f.input :company_name, label: "社名・団体名(協賛/行政のみ)"
+      f.input :gender, as: :select, label: "性別", collection: Visitor::GENDER_LABELS.invert
+      f.input :age_band, as: :select, label: "年齢", collection: Visitor::AGE_BAND_LABELS.invert
+      f.input :resident, as: :select, label: "居住", collection: Visitor::RESIDENT_LABELS.invert
 
       if f.object.persisted?
         f.input :card_number, label: "カード番号"

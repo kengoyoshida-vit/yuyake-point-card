@@ -79,11 +79,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_07_014219) do
   end
 
   create_table "visitors", force: :cascade do |t|
+    t.integer "age_band"
     t.string "avatar_url"
     t.string "card_number"
+    t.integer "category"
+    t.string "company_name"
     t.datetime "created_at", null: false
     t.string "display_name"
+    t.integer "gender"
     t.string "line_user_id"
+    t.datetime "profile_prompted_at"
+    t.integer "resident"
     t.datetime "updated_at", null: false
     t.index ["card_number"], name: "index_visitors_on_card_number", unique: true
     t.index ["line_user_id"], name: "index_visitors_on_line_user_id", unique: true

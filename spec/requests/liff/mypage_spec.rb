@@ -36,5 +36,29 @@ RSpec.describe "Liff mypage", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).not_to include('data-controller="sunset-theme"')
     end
+
+    context "profile dialog" do
+      before do
+        allow(SunsetInfoFetcher).to receive(:new).and_return(
+          instance_double(SunsetInfoFetcher, call: SunsetInfoFetcher::Result.new(success?: false, error: "fetch_error")),
+        )
+      end
+
+      it "shows the dialog to a visitor who has not been prompted yet" do
+        login_as(create(:visitor))
+
+        get liff_mypage_path
+
+        expect(response.body).to include('data-controller="profile-dialog"')
+      end
+
+      it "does not show the dialog once the visitor has been prompted" do
+        login_as(create(:visitor, profile_prompted_at: Time.current))
+
+        get liff_mypage_path
+
+        expect(response.body).not_to include('data-controller="profile-dialog"')
+      end
+    end
   end
 end

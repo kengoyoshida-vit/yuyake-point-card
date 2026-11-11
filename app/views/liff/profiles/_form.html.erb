@@ -1,0 +1,52 @@
+<%# Shared by the first-login dialog (mypage) and the full profile page. %>
+<%= form_with model: visitor, scope: :visitor, url: liff_profile_path, method: :patch,
+      data: { controller: "profile-form" }, class: "space-y-5" do |f| %>
+  <% if visitor.errors.any? %>
+    <p class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800"><%= visitor.errors.full_messages.join("、") %></p>
+  <% end %>
+
+  <fieldset>
+    <legend class="text-sm font-semibold text-slate-700">区分</legend>
+    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-700">
+      <% Visitor::CATEGORY_LABELS.each do |key, label| %>
+        <label class="flex items-center gap-1">
+          <%= f.radio_button :category, key,
+                data: { action: "profile-form#toggle", profile_form_target: "category" } %>
+          <%= label %>
+        </label>
+      <% end %>
+    </div>
+    <div class="mt-2" data-profile-form-target="company" <%= "hidden" unless visitor.sponsor_or_government? %>>
+      <%= f.label :company_name, "社名・団体名", class: "block text-xs text-slate-500" %>
+      <%= f.text_field :company_name, maxlength: Visitor::COMPANY_NAME_MAX_LENGTH,
+            class: "mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend class="text-sm font-semibold text-slate-700">性別</legend>
+    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-700">
+      <% Visitor::GENDER_LABELS.each do |key, label| %>
+        <label class="flex items-center gap-1"><%= f.radio_button :gender, key %> <%= label %></label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <div>
+    <%= f.label :age_band, "年齢", class: "text-sm font-semibold text-slate-700" %>
+    <%= f.select :age_band, Visitor::AGE_BAND_LABELS.map { |key, label| [ label, key ] },
+          { include_blank: "選択してください" },
+          class: "mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" %>
+  </div>
+
+  <fieldset>
+    <legend class="text-sm font-semibold text-slate-700">お住まい</legend>
+    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-700">
+      <% Visitor::RESIDENT_LABELS.each do |key, label| %>
+        <label class="flex items-center gap-1"><%= f.radio_button :resident, key %> <%= label %></label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <%= f.submit "保存", class: "w-full rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-white" %>
+<% end %>
